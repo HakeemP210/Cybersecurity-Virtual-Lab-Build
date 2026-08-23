@@ -59,9 +59,7 @@ Two separate host-only networks in VirtualBox, only connected through pfSense. N
 | Client | Windows 10 |
 | Attacker box | Kali Linux 2026 |
 
-## Some of the stuff that went wrong (my favorite part honestly)
-
-Full details in the [build report](./2026-08-23_tier1-build-report.md), but here's the highlight reel:
+## Some of the stuff that went wrong (troubleshooting)
 
 - **pfSense flat out wouldn't boot** — `CPU doesn't support long mode`. Turns out I had the VM set to a 32-bit OS type, which hides 64-bit CPU features even though my actual CPU supports them fine. Rookie mistake, quick fix once I found it.
 - **Almost blocked myself out of my own attack lab.** pfSense blocks private IP ranges on WAN by default, which makes sense for a real firewall facing the actual internet — except my "WAN" is also a private IP range, since it's all virtual. Left unchecked, that setting would've silently eaten every single packet Kali sent, and I'd have had no idea why.
