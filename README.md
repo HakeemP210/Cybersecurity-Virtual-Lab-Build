@@ -89,14 +89,3 @@ Everything else on WAN is blocked by default — no rule, no traffic.
 ## What's next
 
 - **Tier 2:** Get a SIEM (or a lightweight sensor at least) on the domain side, since the firewall literally cannot see traffic that stays within the same subnet.
-- **Tier 3:** Actually harden the domain a bit — Group Policy, audit policy, a real vuln scan.
-- **Tier 4:** Start attacking through the SMB/RDP path I opened up and see what the SIEM does (or doesn't) catch.
-
-## What's in this repo
-
-| File | What it is |
-|---|---|
-| `README.md` | You're reading it |
-| `2026-08-23_tier1-build-report.md` | The full story — every issue, root cause, and fix |
-| `2026-08-06_homelab-network-diagram.md` | Diagrams + final IP addressing |
-| `2026-08-06_tier1-network-foundations-checklist.md` | The checklist I actually followed while building this |
