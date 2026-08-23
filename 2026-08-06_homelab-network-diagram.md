@@ -54,7 +54,7 @@ flowchart LR
 
 ## Firewall Rules (As-Built)
 
-**LAN rules** (Client → DC, Active Directory logon ports — for firewall-syntax practice; not actually enforced since Client and DC share a subnet and this traffic never routes through pfSense — see the build report for why):
+**LAN rules** (Client → DC, Active Directory logon ports — for firewall-syntax practice; not actually enforced since Client and DC share a subnet and this traffic never routes through pfSense):
 
 | Source | Destination | Protocol | Port | Purpose |
 |---|---|---|---|---|
