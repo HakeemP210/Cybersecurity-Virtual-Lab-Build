@@ -6,7 +6,7 @@
 
 ## As-Built State — Tier 1 Complete
 
-This diagram reflects the lab exactly as built and confirmed working, including final IP addressing. See the companion checklist doc (`2026-08-06_tier1-network-foundations-checklist.md`) for the step-by-step build, and `2026-08-23_tier1-build-report.md` for the full narrative, troubleshooting log, and firewall rule set.
+This diagram reflects the lab exactly as built and confirmed working, including final IP addressing. 
 
 ```mermaid
 flowchart LR
