@@ -68,7 +68,7 @@ Two separate host-only networks in VirtualBox, only connected through pfSense. N
 
 ## Firewall Rules
 
-**LAN — Client → Domain Controller** (AD logon ports, written for practice — doesn't actually get exercised for the reason above):
+**LAN — Client → Domain Controller** (AD logon ports, written just for practice):
 
 | Protocol | Port | Purpose |
 |---|---|---|
