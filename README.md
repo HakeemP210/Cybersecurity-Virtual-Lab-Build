@@ -43,7 +43,7 @@ Two separate host-only networks in VirtualBox, only connected through pfSense. N
 ## What I actually practiced here
 
 - **Segmenting a network** — started with everything flat on one virtual switch, ended with attacker and domain fully separated and only reachable through a firewall.
-- **Writing firewall rules that don't suck** — scoped to specific IPs and ports instead of "allow everything," and figuring out *why* some rules I wrote never actually did anything (see below, that one bugged me for a while).
+- **Writing firewall rules** — scoped to specific IPs and ports instead of "allow everything," and figuring out *why* some rules I wrote never actually did anything (see below, that one bugged me for a while).
 - **Active Directory basics** — stood up a DC, DNS, users, the whole thing.
 - **Actually troubleshooting instead of guessing** — testing one hop at a time (client → gateway → firewall → target) instead of randomly changing settings until something works.
 - **Defense-in-depth, for real this time** — watched a packet get allowed by the firewall and still get dropped by Windows Firewall on the other end. Good reminder that one layer of security isn't security.
