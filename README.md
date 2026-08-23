@@ -84,7 +84,7 @@ Two separate host-only networks in VirtualBox, only connected through pfSense. N
 | TCP/UDP | 3389 | RDP |
 | TCP | 445 | SMB |
 
-Everything else on WAN is blocked by default — no rule, no traffic.
+Everything else on WAN is blocked by default. NO RULE, NO TRAFFIC.
 
 ## What's next
 
