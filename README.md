@@ -8,9 +8,7 @@
 
 I built this after finishing my CompTIA Security+ cert because I wanted a real place to break things and fix them instead of just reading about it. It's a small virtualized network with a Windows domain sitting behind a pfSense firewall, plus a Kali box on its own segment for attacking it. Basically a mini corporate network I get to be both system admin and attacker on.
 
-Full write-up of everything that went wrong (a lot did) and how I fixed it: [`2026-08-23_tier1-build-report.md`](./2026-08-23_tier1-build-report.md)
 Network diagram + IP addressing: [`2026-08-06_homelab-network-diagram.md`](./2026-08-06_homelab-network-diagram.md)
-The checklist I followed while building it: [`2026-08-06_tier1-network-foundations-checklist.md`](./2026-08-06_tier1-network-foundations-checklist.md)
 
 ---
 
