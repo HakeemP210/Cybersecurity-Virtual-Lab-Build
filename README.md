@@ -1,4 +1,4 @@
-# Segmented Cybersecurity Home Lab
+# Cybersecurity Virtual Lab Build
 
 ![Platform](https://img.shields.io/badge/platform-VirtualBox%207.2.6-183A61)
 ![Firewall](https://img.shields.io/badge/firewall-pfSense%20CE-3765A0)
