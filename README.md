@@ -85,7 +85,3 @@ Two separate host-only networks in VirtualBox, only connected through pfSense. N
 | TCP | 445 | SMB |
 
 Everything else on WAN is blocked by default. NO RULE, NO TRAFFIC.
-
-## What's next
-
-- **Tier 2:** Get a SIEM (or a lightweight sensor at least) on the domain side, since the firewall literally cannot see traffic that stays within the same subnet.
