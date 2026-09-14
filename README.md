@@ -61,7 +61,6 @@ Two separate host-only networks in VirtualBox, only connected through pfSense. N
 Took a flat network (everything on one virtual switch) and put a real firewall boundary in the middle of it, with logged, least-privilege rules instead of "allow everything."
 
 **Full write-up:** [`2026-08-23_tier1-build-report.md`](./2026-08-23_tier1-build-report.md)
-**Checklist I followed:** [`2026-08-06_tier1-network-foundations-checklist.md`](./2026-08-06_tier1-network-foundations-checklist.md)
 
 ### What I actually practiced
 
@@ -108,7 +107,6 @@ Tier 1 taught me something annoying: pfSense can only see traffic that actually 
 Then I actually attacked my own DC from Kali to see if any of it worked. It did.
 
 **Full write-up:** [`2026-09-13_tier2-build-report.md`](./2026-09-13_tier2-build-report.md)
-**Checklist I followed:** [`2026-08-23_tier2-visibility-siem-checklist.md`](./2026-08-23_tier2-visibility-siem-checklist.md)
 **The attack + detection exercise, step by step with screenshots:** [`2026-09-14_tier2-visibility-exercise-report.md`](./2026-09-14_tier2-visibility-exercise-report.md)
 
 ![Wazuh showing both agents enrolled and active](./screenshots/tier2/07-wazuh-agent-list.png)
@@ -165,9 +163,7 @@ pfSense's raw syslog reaches Wazuh fine (confirmed at the packet level), but it 
 |---|---|
 | `README.md` | You're reading it |
 | `2026-08-06_homelab-network-diagram.md` | Network diagrams + as-built IP addressing, all tiers |
-| `2026-08-06_tier1-network-foundations-checklist.md` | Step-by-step checklist for Tier 1 |
 | `2026-08-23_tier1-build-report.md` | Full Tier 1 build narrative and troubleshooting log |
-| `2026-08-23_tier2-visibility-siem-checklist.md` | Step-by-step checklist for Tier 2 |
 | `2026-09-13_tier2-build-report.md` | Full Tier 2 build narrative and troubleshooting log |
 | `2026-09-14_tier2-visibility-exercise-report.md` | The brute-force attack + detection exercise, in detail |
 | `screenshots/tier2/` | Screenshots from the Tier 2 build |
