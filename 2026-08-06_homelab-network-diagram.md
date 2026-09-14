@@ -1,12 +1,12 @@
 # Cybersecurity Home Lab — Network Diagram
 
-**Last updated:** 2026-08-23
+**Last updated:** 2026-09-13
 **Platform:** Oracle VirtualBox 7.2.6
-**Status:** Tier 1 (Network Foundations) complete — as-built
+**Status:** Tier 1 (Network Foundations) and Tier 2 (Visibility/SIEM) complete — as-built
 
-## As-Built State — Tier 1 Complete
+## As-Built State — Tier 2 Complete
 
-This diagram reflects the lab exactly as built and confirmed working, including final IP addressing. 
+This diagram reflects the lab exactly as built and confirmed working, including final IP addressing. See the companion checklist docs (`2026-08-06_tier1-network-foundations-checklist.md`, `2026-08-23_tier2-visibility-siem-checklist.md`) for the step-by-step builds, and the build reports (`2026-08-23_tier1-build-report.md`, `2026-09-13_tier2-build-report.md`) for the full narratives and troubleshooting logs.
 
 ```mermaid
 flowchart LR
@@ -24,12 +24,17 @@ flowchart LR
     subgraph INSIDE["Inside / Target Segment<br/>Host-only Network (192.168.164.0/24)"]
         DC["Windows Server 2022 VM<br/>Domain Controller (DC)<br/>192.168.164.11 — testlab.com"]
         CLIENT["Windows 10 VM<br/>Domain Client — Paul Maudib<br/>192.168.164.12"]
+        SIEM["Wazuh-SIEM VM<br/>192.168.164.20"]
         DC <--> CLIENT
+        DC -. Sysmon + Windows logs .-> SIEM
+        CLIENT -. Sysmon + Windows logs .-> SIEM
     end
 
     KALI <--> WAN
     LAN <--> DC
     LAN <--> CLIENT
+    LAN <--> SIEM
+    LAN -. syslog UDP/514 .-> SIEM
 ```
 
 ## As-Built Addressing
@@ -37,10 +42,11 @@ flowchart LR
 | Device | Interface | IP Address | Gateway | Notes |
 |---|---|---|---|---|
 | pfSense-FW | WAN | 192.168.56.10/24 | — | Faces Kali; no upstream gateway (isolated segment) |
-| pfSense-FW | LAN | 192.168.164.10/24 | — | Gateway for the Inside segment |
+| pfSense-FW | LAN | 192.168.164.10/24 | — | Gateway for the Inside segment; forwards firewall events via syslog to Wazuh |
 | Kali Linux | eth0 | 192.168.56.21/24 | 192.168.56.10 | Attacker VM |
-| Windows Server 2022 (DC) | Ethernet | 192.168.164.11/24 | 192.168.164.10 | Domain Controller (DC), Active Directory (AD) domain `testlab.com`, DNS points to self (127.0.0.1) |
-| Windows 10 (Client) | Ethernet | 192.168.164.12/24 | 192.168.164.10 | User: Paul Maudib; DNS points to DC (192.168.164.11) |
+| Windows Server 2022 (DC) | Ethernet | 192.168.164.11/24 | 192.168.164.10 | Domain Controller (DC), Active Directory (AD) domain `testlab.com`, DNS points to self (127.0.0.1); Wazuh agent + Sysmon installed |
+| Windows 10 (Client) | Ethernet | 192.168.164.12/24 | 192.168.164.10 | User: Paul Maudib; DNS points to DC (192.168.164.11); Wazuh agent + Sysmon installed |
+| Wazuh-SIEM (Amazon Linux 2023) | eth0 | 192.168.164.20/24 | 192.168.164.10 | Security Information and Event Management (SIEM) — collects DC/Client agent telemetry and pfSense syslog |
 
 ## Legend
 
@@ -54,7 +60,7 @@ flowchart LR
 
 ## Firewall Rules (As-Built)
 
-**LAN rules** (Client → DC, Active Directory logon ports — for firewall-syntax practice; not actually enforced since Client and DC share a subnet and this traffic never routes through pfSense):
+**LAN rules** (Client → DC, Active Directory logon ports — for firewall-syntax practice; not actually enforced since Client and DC share a subnet and this traffic never routes through pfSense — see the build report for why):
 
 | Source | Destination | Protocol | Port | Purpose |
 |---|---|---|---|---|
@@ -88,7 +94,17 @@ flowchart LR
     DC2 <--> CLIENT2
 ```
 
-## Planned Future Additions (Tier 2+)
+## Tier 2 Additions (Complete)
 
-- **SIEM VM** (Security Information and Event Management — a system that collects and analyzes logs from other machines): planned to sit on the Inside segment, receiving logs from the DC, Client, and pfSense/OPNsense.
-- **Second NAT adapter** on each VM (optional): for internet access/updates, kept separate from the Host-only adapters used for lab traffic.
+- **Wazuh-SIEM VM** (Amazon Linux 2023, `192.168.164.20`): collects Wazuh agent telemetry (Windows Event Logs + Sysmon) from the DC and Client, and receives pfSense firewall events via syslog (UDP/514).
+- **Temporary second NAT adapters**: used transiently on the DC, Client, and pfSense during installs (Wazuh agent MSI, Sysmon, pfSense packages) to reach the internet from an otherwise fully isolated segment, then removed afterward — the lab has no permanent internet access on either Host-only network.
+
+## Known Limitation
+
+pfSense's raw syslog reaches Wazuh at the network level (confirmed via `tcpdump`) but isn't decoded into a proper Wazuh alert — no built-in decoder exists for pfSense's log format. Deliberately deferred to Tier 5 (write a custom Wazuh decoder/rule). See the Tier 2 build report for details.
+
+## Planned Future Additions (Tier 3+)
+
+- **AD hardening baseline**: Group Policy, audit policy tuning, vulnerability scan.
+- **Attack simulation** (Tier 4) against the confirmed SMB/RDP attack surface, validated against Wazuh detections.
+- **Custom Wazuh decoder for pfSense** (Tier 5), closing the known limitation above.
