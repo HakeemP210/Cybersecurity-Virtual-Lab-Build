@@ -1,7 +1,7 @@
 # Cybersecurity Home Lab — Tier 3 Build Report
 
 **Author:** Hakeem Phillips
-**Date range:** 2026-09-14 through 2026-10-04
+**Completed:** 2026-10-04
 **Platform:** Oracle VirtualBox 7.2.6, hosted on Windows 11 Pro
 **Status:** Tier 3 (Active Directory Hardening Baseline) complete
 
