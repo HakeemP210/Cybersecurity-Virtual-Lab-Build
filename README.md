@@ -13,6 +13,7 @@ I'm building this in tiers, each one on top of the last. Jump to whichever one y
 
 - [Tier 1: Network Foundations](#tier-1-network-foundations)
 - [Tier 2: Visibility (SIEM)](#tier-2-visibility-siem)
+- [Tier 3: AD Hardening Baseline](#tier-3-ad-hardening-baseline)
 - [Tools](#tools)
 - [What's Next](#whats-next)
 - [Repo Contents](#repo-contents)
@@ -134,6 +135,20 @@ pfSense's raw syslog reaches Wazuh fine (confirmed at the packet level), but it 
 
 ---
 
+## Tier 3: AD Hardening Baseline
+
+Took the default domain and made it deliberately configured: OUs, password and audit policy through Group Policy, realistic accounts with different privilege levels, and an authenticated vulnerability scan with remediation.
+
+**Full write-up with evidence:** [`2026-10-04_tier3-build-report.md`](./2026-10-04_tier3-build-report.md)
+
+Highlights:
+- Closed the SMB null-session exposure from Tier 2. The netexec banner still said `Null Auth:True`, but anonymous share enumeration was actually denied.
+- Found that Security Group Management auditing was separate from User Account Management. Account events logged, but group membership events didn't until I enabled that subcategory.
+- Ran an authenticated Nessus scan and fixed the DC's findings with a Windows Update and a 3DES cipher disable. Critical findings dropped from 23 to 0.
+- Hit a fair number of "the tool says it's fine but it isn't" moments, documented in the report.
+
+---
+
 ## Tools
 
 | Component | Tool |
@@ -167,4 +182,6 @@ pfSense's raw syslog reaches Wazuh fine (confirmed at the packet level), but it 
 | `2026-09-13_tier2-build-report.md` | Full Tier 2 build narrative and troubleshooting log |
 | `2026-09-14_tier2-visibility-exercise-report.md` | The brute-force attack + detection exercise, in detail |
 | `screenshots/tier2/` | Screenshots from the Tier 2 build |
+| `2026-10-04_tier3-build-report.md` | Full Tier 3 build narrative, findings table, and evidence |
 | `screenshots/tier2-exercise/` | Screenshots from the detection exercise |
+| `screenshots/tier3/` | Cropped screenshots from the Tier 3 build and scan |

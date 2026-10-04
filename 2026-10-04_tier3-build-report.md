@@ -107,7 +107,44 @@ The Client was intentionally left unpatched as a comparison point.
 
 Open items are deliberate for now and will be addressed in a future pass.
 
-## 6. Key Lessons Learned
+## 6. Evidence
+
+### Part 1: SMB null-session hardening
+![Netexec reporting a null session on the DC](./screenshots/tier3/01-null-auth-banner.png)
+
+### Part 2: OU structure
+![Default DC policy with the anonymous enumeration settings enabled](./screenshots/tier3/03-default-dc-policy-edit.png)
+![TestLab OU with Admins, Servers, Users, and Workstations sub-OUs](./screenshots/tier3/04-ou-structure.png)
+![Client computer object in the Workstations OU](./screenshots/tier3/06-workstation-ou.png)
+
+### Part 3: Password policy
+![Default password policy before the change](./screenshots/tier3/07-default-password-policy.png)
+![Hardened password policy on the Default Domain Policy](./screenshots/tier3/08-hardened-password-policy.png)
+![Active Directory rejecting a weak password change](./screenshots/tier3/10-weak-password-rejected.png)
+
+### Part 4: Audit policy
+![Advanced audit policy configured](./screenshots/tier3/11-audit-policies-configured.png)
+![Audit Policy GPO applied to the DC](./screenshots/tier3/12-audit-policy-gpo-applied.png)
+![Security Group Management audit before and after gpupdate](./screenshots/tier3/15-security-group-management-audit.png)
+
+### Part 5: Accounts and Wazuh validation
+![Account creation event (4720) in Wazuh](./screenshots/tier3/13-user-created-in-wazuh.png)
+![Account deletion event (4726) in Wazuh](./screenshots/tier3/14-user-deleted-in-wazuh.png)
+![Group membership change to Domain Admins (4728) in Wazuh](./screenshots/tier3/16-domain-admin-added-in-wazuh.png)
+
+### Part 6: Vulnerability scan and remediation
+![Firewall rules on WAN, including the Kali to Client scan rule](./screenshots/tier3/18-pfsense-client-scan-rule.png)
+![Unauthenticated scan detecting only the DC](./screenshots/tier3/20-nessus-only-dc-detected.png)
+![Both hosts authenticated (Pass) after the firewall and SMB fixes](./screenshots/tier3/21-nessus-both-hosts.png)
+![Baseline vulnerability groups before remediation](./screenshots/tier3/22-nessus-vulnerabilities-baseline.png)
+![Baseline remediation actions](./screenshots/tier3/23-nessus-remediations-baseline.png)
+![Pending Windows Update packages on the DC](./screenshots/tier3/24-windows-update-pending.png)
+![Both hosts after the Windows Update](./screenshots/tier3/25-nessus-hosts-post-update.png)
+![Vulnerability groups after the Windows Update](./screenshots/tier3/26-nessus-vulnerabilities-post-update.png)
+![SWEET32 (3DES) High finding before the Schannel change](./screenshots/tier3/27-sweet32-finding.png)
+![SWEET32 finding cleared after the Schannel change](./screenshots/tier3/28-sweet32-cleared.png)
+
+## 7. Key Lessons Learned
 
 - **A GPO being applied is not the same as its effect being enforced.** Confirm with the effective-state tool (`auditpol`, `netexec` results) and test the real behavior. Several settings needed a reboot or service restart.
 - **Scanner summary flags measure different things than impact.** The "Null Auth" banner remained true while anonymous enumeration was actually blocked.
@@ -116,7 +153,7 @@ Open items are deliberate for now and will be addressed in a future pass.
 - **Windows Update and configuration hardening solve different problems.** Patching cleared most of the Critical and High findings, but a weak cipher setting needed its own change.
 - **Verify every change by reading it back.** A registry path typo created a stray key that would have been easy to miss.
 
-## 7. Next Steps
+## 8. Next Steps
 
 - Address the open items: the 8.8 Microsoft Bulletins update and the SSL/TLS Medium findings.
 - Decide whether to patch the Client to compare results.
