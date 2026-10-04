@@ -98,14 +98,37 @@ Brute-force attempts against the DC (`192.168.164.11`) via both RDP and SMB, sou
 
 **Bonus finding (not part of the original plan):** `netexec`'s SMB recon banner reported `Null Auth: True` on the DC — anonymous/null SMB sessions are accepted. This is a real hardening gap, flagged for remediation in Tier 3.
 
-## 6. Key Lessons Learned
+## 6. Evidence
+
+The detection exercise screenshots are in the [exercise report](./2026-09-14_tier2-visibility-exercise-report.md). The images below cover the build.
+
+### Wazuh static IP and manager setup
+![Wazuh SIEM static IP configured via systemd-networkd (MAC and IPv6 blurred)](./screenshots/tier2-build/01-wazuh-static-ip-setup.png)
+
+### Agent install: the wrong and correct manager IP
+![DC agent install using the DC's own IP (192.168.164.11) as the manager, the Tier 2 bug from section 4.6](./screenshots/tier2-build/02-dc-agent-install-wrong-manager-ip.png)
+![DC agent deploy wizard with the wrong server address pre-filled](./screenshots/tier2-build/03-dc-agent-wizard-wrong-server-address.png)
+![Client agent install pointed at the SIEM (192.168.164.20), the corrected command](./screenshots/tier2-build/04-client-agent-deployed-correct-manager-ip.png)
+
+### Agent enrollment and syslog listener
+![Both agents enrolled: DC active, Client pending](./screenshots/tier2-build/05-wazuh-agent-list.png)
+![Wazuh manager active and listening after the ossec.conf syslog fix](./screenshots/tier2-build/06-wazuh-manager-running-after-syslog-fix.png)
+
+### End-to-end validation
+![Failed logon events (4625) from the Client, PaulM, in Wazuh](./screenshots/tier2-build/07-e2e-failed-login-4625.png)
+![Successful logon events (4624) from the DC in Wazuh](./screenshots/tier2-build/08-e2e-successful-login-4624.png)
+
+### Snapshot
+![All five VMs snapshotted as Tier 2 Complete](./screenshots/tier2-build/09-vm-snapshots-tier2-complete.png)
+
+## 7. Key Lessons Learned
 
 - **Confirm the actual OS/tool stack before following generic instructions** — assumptions about Ubuntu/Netplan and about Hydra's RDP module both cost real time before being caught by direct verification.
 - **A tool's summary output can be misleading** — "0 valid passwords found, target completed" read as a clean failure-only run; the real per-line output told a very different story.
 - **Detection engineering has two distinct layers worth checking separately**: are individual events logged at all, and does anything correlate a *pattern* across them into a higher-confidence alert? Tier 2 confirmed both layers work for brute-force login attempts.
 - **Isolated lab networks lose time sync silently** — this is now the second clock-drift incident (pfSense, again) since there's no NTP source; worth treating as an expected recurring maintenance item rather than a one-off fix.
 
-## 7. Next Steps (Tier 3+)
+## 8. Next Steps (Tier 3+)
 
 - AD hardening baseline: Group Policy, audit policy tuning, vulnerability scan — including remediating the SMB Null Auth finding above.
 - Tier 4 attack simulation against the now-confirmed SMB/RDP surface, validated against Wazuh detections.
