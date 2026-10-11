@@ -14,6 +14,7 @@ I'm building this in tiers, each one on top of the last. Jump to whichever one y
 - [Tier 1: Network Foundations](#tier-1-network-foundations)
 - [Tier 2: Visibility (SIEM)](#tier-2-visibility-siem)
 - [Tier 3: AD Hardening Baseline](#tier-3-ad-hardening-baseline)
+- [Tier 4: Attack Simulation](#tier-4-attack-simulation)
 - [Tools](#tools)
 - [What's Next](#whats-next)
 - [Repo Contents](#repo-contents)
@@ -149,6 +150,23 @@ Highlights:
 
 ---
 
+## Tier 4: Attack Simulation
+
+Switched to the attacker's seat. I ran a full attack chain against the domain I'd just hardened, in two phases: an outside attacker working through the firewall, then an attacker who's gotten a device onto the internal network. The real goal wasn't the attacks themselves. It was measuring what my Wazuh SIEM actually caught, and building a scorecard of the gaps.
+
+**Full write-up with the detection scorecard and evidence:** [`2026-10-10_tier4-build-report.md`](./2026-10-10_tier4-build-report.md)
+
+![netexec password spray against the domain, all attempts failed](./screenshots/tier4/02-password-spray.png)
+
+Highlights:
+- **The hardening held up front.** The port scan saw only two open ports. The password spray got nothing. The null-session fix from Tier 3 still blocked share enumeration.
+- **The AD attacks worked once I was inside.** Kerberoasting and AS-REP roasting both cracked (weak-but-policy-compliant passwords). Responder captured a hash, though it didn't crack.
+- **Pass-the-hash got caught twice.** Windows Defender blocked the payload on its own, and Wazuh independently flagged the service creation at level 12. Two layers, no coordination needed.
+- **The quietest attack was the worst.** Dumping every password hash off the domain controller generated zero alerts. That was the biggest gap on the board.
+- **One fix, honestly measured.** I turned on Kerberos auditing and confirmed the service-ticket event (4769) now shows up — a clean before/after. But the AS-REP event still won't fire, and the secrets-dump event needs more than a checkbox. Turning on a setting isn't the same as proving it works.
+
+---
+
 ## Tools
 
 | Component | Tool |
@@ -167,8 +185,7 @@ Highlights:
 ## What's Next
 
 - **Tier 3:** AD hardening baseline — Group Policy, audit policy, and fixing that SMB null-session gap I found by accident.
-- **Tier 4:** Real attack simulation through the SMB/RDP path I already opened up, now that I know the SIEM actually catches things.
-- **Tier 5:** Write a custom Wazuh decoder so pfSense's own logs show up as real alerts instead of just raw data.
+- **Tier 5:** Write a custom Wazuh decoder for pfSense logs, add a SACL so secrets-dump attempts get logged, and build custom rules for the gaps Tier 4 found.
 
 ---
 
@@ -183,5 +200,7 @@ Highlights:
 | `2026-09-14_tier2-visibility-exercise-report.md` | The brute-force attack + detection exercise, in detail |
 | `screenshots/tier2/` | Screenshots from the Tier 2 build |
 | `2026-10-04_tier3-build-report.md` | Full Tier 3 build narrative, findings table, and evidence |
+| `2026-10-10_tier4-build-report.md` | Full Tier 4 attack simulation, detection scorecard, and evidence |
 | `screenshots/tier2-exercise/` | Screenshots from the detection exercise |
 | `screenshots/tier3/` | Cropped screenshots from the Tier 3 build and scan |
+| `screenshots/tier4/` | Cropped screenshots from the Tier 4 attack simulation |
